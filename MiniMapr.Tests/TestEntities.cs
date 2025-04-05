@@ -1,4 +1,4 @@
-namespace MiniMapr.Tests.Unit.Core;
+namespace MiniMapr.Tests;
 
 public class User
 {
@@ -57,3 +57,15 @@ public class PersonDto
 {
     public string? Name { get; set; }
 }
+
+public class DummyConfig : IMapperConfig
+{
+    public bool WasConfigured { get; set; }
+    public void Configure(MapperService mapperService)
+    {
+        WasConfigured = true;
+        mapperService.Add<Person, PersonDto>();
+    }
+}
+
+public class InvalidConfig { }
