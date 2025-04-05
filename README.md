@@ -3,7 +3,7 @@
 ### Defining the Source and Target Classes
 Suppose you have the following domain and DTO classes:
 
-```
+```csharp
 public class User
 {
     public string Name { get; set; }
@@ -35,7 +35,7 @@ public class AddressDto
 To define mappings, create classes that implement IMapperConfig. Inside the Configure method, register your mappings using the MapperService instance provided.
 
 Example:
-```
+```csharp
 using MiniMapr;
 
 public class UserMappingConfig : IMapperConfig 
@@ -63,7 +63,7 @@ public class AddressMappingConfig : IMapperConfig
 ### Registering MiniMap in Dependency Injection
 To use MiniMapr in a .NET application, register the configuration classes during startup using AddMapper:
 
-```
+```csharp
 var services = new ServiceCollection();
 
 services.AddMapper(mapper => 
@@ -79,7 +79,7 @@ var mapperService = serviceProvider.GetRequiredService<IMapper>();
 Using the Mapper
 Once registered, you can use the mapper as follows:
 
-```
+```csharp
 var user = new User
 {
     Name = "Alice",
