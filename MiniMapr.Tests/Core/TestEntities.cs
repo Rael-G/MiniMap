@@ -1,6 +1,4 @@
-using System;
-
-namespace MiniMapr.Tests;
+namespace MiniMapr.Tests.Core;
 
 public class User
 {

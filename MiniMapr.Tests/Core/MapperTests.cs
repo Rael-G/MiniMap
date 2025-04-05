@@ -1,6 +1,6 @@
 using FluentAssertions;
 
-namespace MiniMapr.Tests;
+namespace MiniMapr.Tests.Core;
 
 public class MapperTests
 {

@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Moq;
 
-namespace MiniMapr.Tests;
+namespace MiniMapr.Tests.Core;
 
 public class MapperServiceTests
 {
