@@ -6,17 +6,17 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>MiniMap</PackageId>
+    <PackageId>MiniMapr</PackageId>
     <Authors>Israel Galvan</Authors>
     <Version>1.0.0</Version>
-    <Product>MiniMap</Product>
+    <Product>MiniMapr</Product>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <RepositoryUrl>https://github.com/Rael-G/MiniMap</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/Rael-G/MiniMap</PackageProjectUrl>
-    <PackageTags>object-mapping;mapper;mapping;dto;automapper;minimap</PackageTags>
+    <RepositoryUrl>https://github.com/Rael-G/MiniMapr</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Rael-G/MiniMapr</PackageProjectUrl>
+    <PackageTags>object-mapping;mapper;mapping;dto;automapper;minimapr</PackageTags>
     <Description>
-      MiniMap is a lightweight and flexible object mapper for .NET, built for easy, customizable mappings between classes.
+      MiniMapr is a lightweight and flexible object mapper for .NET, built for easy, customizable mappings between classes.
     </Description>
   </PropertyGroup>
 
