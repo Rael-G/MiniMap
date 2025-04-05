@@ -1,4 +1,4 @@
-# Using Mapper for Object Mapping in .NET
+# Using MiniMap for Object Mapping in .NET
 
 ### Defining the Source and Target Classes
 Suppose you have the following domain and DTO classes:
@@ -36,7 +36,7 @@ To define mappings, create classes that implement IMapperConfig. Inside the Conf
 
 Example:
 ```
-using Mapper;
+using MiniMap;
 
 public class UserMappingConfig : IMapperConfig 
 { 
@@ -60,11 +60,11 @@ public class AddressMappingConfig : IMapperConfig
     } 
 }
 ```
-### Registering the Mapper in Dependency Injection
-To use the mapper in a .NET application, register the configuration classes during startup using AddMapper:
+### Registering MiniMap in Dependency Injection
+To use MiniMap in a .NET application, register the configuration classes during startup using AddMapper:
 
 ```
-using Mapper;
+using MiniMap;
 using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();
