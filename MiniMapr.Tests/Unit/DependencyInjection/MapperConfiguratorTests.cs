@@ -57,7 +57,7 @@ public class MapperConfiguratorTests
 
         config.WasConfigured.Should().BeTrue();
 
-        mapper.Map<string, string>("data").Should().Be("data");
+        mapper.Map<Person, PersonDto>(new Person { Name = "Alice" }).Name.Should().Be("Alice");
     }
 }
 
