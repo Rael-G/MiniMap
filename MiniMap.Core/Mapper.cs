@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace MiniMap
+namespace MiniMapr
 {
     /// <summary>
     /// A generic mapper that maps properties from a source object to a destination object.

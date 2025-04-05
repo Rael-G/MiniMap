@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MiniMap
+namespace MiniMapr
 {
     /// <summary>
     /// Provides extension methods for registering the mapper service in the dependency injection container.

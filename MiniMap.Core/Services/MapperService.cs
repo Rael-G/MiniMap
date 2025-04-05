@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MiniMap
+namespace MiniMapr
 {
     /// <summary>
     /// A service that manages and applies registered mappers for mapping objects between different types.

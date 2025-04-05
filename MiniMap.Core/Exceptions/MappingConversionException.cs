@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniMap
+namespace MiniMapr
 {
     /// <summary>
     /// Exception thrown when a value cannot be converted during the mapping process between two types.

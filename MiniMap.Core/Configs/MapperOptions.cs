@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MiniMap
+namespace MiniMapr
 {
     /// <summary>
     /// Represents configuration options for customizing the object mapping behavior,

@@ -1,4 +1,4 @@
-namespace MiniMap
+namespace MiniMapr
 {
     /// <summary>
     /// Defines a contract for mapping objects from type <typeparamref name="TSource"/> to type <typeparamref name="TDestination"/>.

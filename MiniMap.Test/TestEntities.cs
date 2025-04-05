@@ -1,6 +1,6 @@
 using System;
 
-namespace MiniMap.Tests;
+namespace MiniMapr.Tests;
 
 public class User
 {

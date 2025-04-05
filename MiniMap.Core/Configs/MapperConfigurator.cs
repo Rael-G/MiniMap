@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MiniMap
+namespace MiniMapr
 {
     /// <summary>
     /// Class responsible for managing and applying multiple mapping configurations.

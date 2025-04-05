@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MiniMap.Core\MiniMap.Core.csproj" />
+    <ProjectReference Include="..\MiniMap.Core\MiniMapr.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

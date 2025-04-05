@@ -1,4 +1,4 @@
-namespace MiniMap
+namespace MiniMapr
 {
     /// <summary>
     /// Defines a contract for mapping objects from one type to another.
