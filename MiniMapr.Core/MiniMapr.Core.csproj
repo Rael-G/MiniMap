@@ -13,6 +13,7 @@
     <Product>MiniMapr</Product>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReleaseNotes>https://github.com/Rael-G/MiniMapr/blob/main/CHANGELOG.md<PackageReleaseNotes>
     <RepositoryUrl>https://github.com/Rael-G/MiniMapr</RepositoryUrl>
     <PackageProjectUrl>https://github.com/Rael-G/MiniMapr</PackageProjectUrl>
     <PackageTags>object-mapping;mapper;mapping;dto;automapper;minimapr</PackageTags>
