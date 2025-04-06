@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MiniMapr.Core\MiniMapr.Core.csproj" />
     <ProjectReference Include="..\MiniMapr.DependencyInjection\MiniMapr.DependencyInjection.csproj" />
   </ItemGroup>
 
