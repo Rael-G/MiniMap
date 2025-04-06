@@ -1,0 +1,45 @@
+name: Versioning
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+jobs:
+  version:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    name: Versioning and Tagging
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Setup git
+        run: |
+          git config --local user.name github-actions[bot]
+          git config --local user.email github-actions[bot]@users.noreply.github.com
+
+      - name: Install Versionize
+        run: dotnet tool install --global Versionize
+
+      - name: Versioning
+        id: versionize
+        run: versionize --exit-insignificant-commits
+        continue-on-error: true
+
+      - name: Push tags and changelog
+        if: steps.versionize.outcome == 'success'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          tags: true

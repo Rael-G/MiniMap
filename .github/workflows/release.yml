@@ -1,62 +1,33 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Versioning"]
+    types:
+      - completed
 
 jobs:
-  release:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    name: Build, Version, Release
+    name: Deploy to GitHub + NuGet
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-            fetch-depth: 0
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build -c Release
-
-      - name: Run Tests
-        run: dotnet test -c Release --no-build --verbosity normal
-
-      - name: Setup git
-        run: |
-          git config --local user.name github-actions[bot]
-          git config --local user.email github-actions[bot]@users.noreply.github.com
-
-      - name: Install Versionize
-        run: dotnet tool install --global Versionize
-
-      - name: Versioning
-        id: versionize
-        run: versionize --exit-insignificant-commits
-        continue-on-error: true
-
-      - name: No release required
-        if: steps.versionize.outcome != 'success'
-        run: echo "Skipping Release. No release required."
-
-      - name: Push changes to GitHub
-        if: steps.versionize.outcome == 'success'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-          tags: true
+      - name: Get latest tag
+        id: get_tag
+        run: echo "version=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
 
       - name: Extract changelog entry
-        if: steps.versionize.outcome == 'success'
         id: changelog
         run: |
           body=$(awk '/^## /{i++} i==2{exit} i==1{print}' CHANGELOG.md)
@@ -64,17 +35,10 @@ jobs:
           echo "$body" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Pack
-        if: steps.versionize.outcome == 'success'
-        run: dotnet pack -c Release --no-build --output ./artifacts /p:PackageReleaseNotes="${{ steps.changelog.outputs.body }}"
-  
-      - name: Get latest tag
-        if: steps.versionize.outcome == 'success'
-        id: get_tag
-        run: echo "version=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
+      - name: Build NuGet Packages
+        run: dotnet pack -c Release --output ./artifacts
 
       - name: Create GitHub Release
-        if: steps.versionize.outcome == 'success'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.get_tag.outputs.version }}
@@ -85,6 +49,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to NuGet
-        if: steps.versionize.outcome == 'success'
         run: dotnet nuget push ./artifacts/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
-        
