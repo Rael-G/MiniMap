@@ -40,7 +40,7 @@ jobs:
 
       - name: Versioning
         id: versionize
-        run: versionize
+        run: versionize --exit-insignificant-commits
         continue-on-error: true
 
       - name: No release required
