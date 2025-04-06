@@ -1,5 +1,11 @@
 # Using MiniMapr for Object Mapping in .NET
 
+To install the package:
+
+```bash
+dotnet add package MiniMapr
+```
+
 ### Defining the Source and Target Classes
 Suppose you have the following domain and DTO classes:
 
