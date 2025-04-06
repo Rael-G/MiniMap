@@ -21,31 +21,6 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      - name: Install Versionize
-        run: dotnet tool install --global Versionize
-
-      - name: Setup git
-        run: |
-          git config --local user.name github-actions[bot]
-          git config --local user.email github-actions[bot]@users.noreply.github.com
-
-      - name: Versioning
-        id: versionize
-        run: versionize --exit-insignificant-commits
-        continue-on-error: true
-
-      - name: No release required
-        if: steps.versionize.outcome != 'success'
-        run: echo "Skipping Release. No release required."
-          
-      - name: Push changes to GitHub
-        if: steps.versionize.outcome == 'success'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-          tags: true
-        
       - name: Restore dependencies
         run: dotnet restore
 
@@ -55,14 +30,30 @@ jobs:
       - name: Run Tests
         run: dotnet test -c Release --no-build --verbosity normal
 
-      - name: Pack
-        if: steps.versionize.outcome == 'success'
-        run: dotnet pack -c Release --no-build --output ./artifacts
+      - name: Setup git
+        run: |
+          git config --local user.name github-actions[bot]
+          git config --local user.email github-actions[bot]@users.noreply.github.com
 
-      - name: Get latest tag
+      - name: Install Versionize
+        run: dotnet tool install --global Versionize
+
+      - name: Versioning
+        id: versionize
+        run: versionize
+        continue-on-error: true
+
+      - name: No release required
+        if: steps.versionize.outcome != 'success'
+        run: echo "Skipping Release. No release required."
+
+      - name: Push changes to GitHub
         if: steps.versionize.outcome == 'success'
-        id: get_tag
-        run: echo "version=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          tags: true
 
       - name: Extract changelog entry
         if: steps.versionize.outcome == 'success'
@@ -73,12 +64,22 @@ jobs:
           echo "$body" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
+      - name: Pack
+        if: steps.versionize.outcome == 'success'
+        run: dotnet pack -c Release --no-build --output ./artifacts /p:PackageReleaseNotes="${{ steps.changelog.outputs.body }}"
+  
+      - name: Get latest tag
+        if: steps.versionize.outcome == 'success'
+        id: get_tag
+        run: echo "version=$(git describe --tags --abbrev=0)" >> "$GITHUB_OUTPUT"
+
       - name: Create GitHub Release
         if: steps.versionize.outcome == 'success'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.get_tag.outputs.version }}
-          name: Release v${{ steps.get_tag.outputs.version }}
+          tag_name: ${{ steps.get_tag.outputs.version }}
+          name: Release ${{ steps.get_tag.outputs.version }}
+          body: ${{ steps.changelog.outputs.body }}
           files: ./artifacts/*.nupkg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
