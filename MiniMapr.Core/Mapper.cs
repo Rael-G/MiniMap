@@ -63,7 +63,7 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
                 continue;
 
             var sourceValue = GetTransformedValue(sourceProp.Name, sourceProp.GetValue(source));
-            var convertedValue = ConvertValue(sourceValue, destProp.PropertyType, sourceProp.Name, destProp.Name);
+            var convertedValue = ConvertValue(sourceValue, sourceProp.PropertyType, destProp.PropertyType, sourceProp.Name, destProp.Name);
 
             var setter = _propertyCache.GetSetter(destProp);
             setter(destination, convertedValue);
@@ -72,10 +72,10 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
         return destination;
     }
 
-    private static object? ConvertValue(object? value, Type targetType, string sourcePropName, string destinationPropName)
+    private static object? ConvertValue(object? value, Type sourceType, Type targetType, string sourcePropName, string destinationPropName)
     {
         if (value == null) return null;
-        if (targetType.IsAssignableFrom(value.GetType())) return value;
+        if (targetType.IsAssignableFrom(sourceType)) return value;
 
         try
         {
