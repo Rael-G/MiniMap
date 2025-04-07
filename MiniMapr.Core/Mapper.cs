@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace MiniMapr;
@@ -12,6 +13,8 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
     where TDestination : new()
 {
     private readonly MapperOptions _mapperOptions;
+
+    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
 
     public Mapper()
     {
@@ -45,7 +48,7 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
         if (source is null) throw new ArgumentNullException(nameof(source));
         if (destination is null) throw new ArgumentNullException(nameof(destination));
 
-        var sourceProperties = typeof(TSource).GetProperties();
+        var sourceProperties = GetCachedProperties(typeof(TSource));
         var destinationProperties = Mapper<TSource, TDestination>.GetWritableProperties(typeof(TDestination));
 
         foreach (var sourceProp in sourceProperties)
@@ -90,7 +93,7 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
 
     private static Dictionary<string, PropertyInfo> GetWritableProperties(Type type)
     {
-        return type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        return GetCachedProperties(type)
                 .Where(p => p.CanWrite)
                 .ToDictionary(p => p.Name);
     }
@@ -108,4 +111,15 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
             ? transform(originalValue)
             : originalValue;
     }
+
+    private static PropertyInfo[] GetCachedProperties(Type type)
+    {
+        if (!_propertyCache.TryGetValue(type, out var props))
+        {
+            props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            _propertyCache[type] = props;
+        }
+        return props;
+    }
+
 }
