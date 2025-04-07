@@ -65,7 +65,8 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
             var sourceValue = GetTransformedValue(sourceProp.Name, sourceProp.GetValue(source));
             var convertedValue = ConvertValue(sourceValue, destProp.PropertyType, sourceProp.Name, destProp.Name);
 
-            destProp.SetValue(destination, convertedValue);
+            var setter = _propertyCache.GetSetter(destProp);
+            setter(destination, convertedValue);
         }
 
         return destination;
