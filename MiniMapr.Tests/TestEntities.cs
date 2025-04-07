@@ -58,6 +58,12 @@ public class PersonDto
     public string? Name { get; set; }
 }
 
+public class Student
+{
+    public string Name { get; set; } = "Alice";
+    public int Age { get; set; } = 20;
+}
+
 public class DummyConfig : IMapperConfig
 {
     public bool WasConfigured { get; set; }
