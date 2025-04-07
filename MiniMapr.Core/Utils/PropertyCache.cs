@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace MiniMapr.Core;
+namespace MiniMapr.Core.Utils;
 
 /// <summary>
 /// Provides cached access to property metadata and compiled getters/setters for improved performance during mapping.

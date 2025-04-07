@@ -1,11 +1,10 @@
 using FluentAssertions;
-using MiniMapr.Core;
+using MiniMapr.Core.Utils;
 
 namespace MiniMapr.Tests.Unit.Core;
 
 public class PropertyCacheTests
 {
-
     private readonly PropertyCache _cache = new();
 
     [Fact]
