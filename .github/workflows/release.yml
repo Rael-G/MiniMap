@@ -36,7 +36,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Build NuGet Packages
-        run: dotnet pack -c Release --output ./artifacts
+        run: dotnet pack MiniMapr.Core/MiniMapr.Core.csproj -c Release --output ./artifacts
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
