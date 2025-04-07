@@ -1,5 +1,6 @@
 using System.Reflection;
 using MiniMapr.Core;
+using MiniMapr.Core.Exceptions;
 
 namespace MiniMapr;
 
@@ -51,7 +52,8 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
         if (destination is null) throw new ArgumentNullException(nameof(destination));
 
         var sourceProperties = _propertyCache.GetCachedProperties(typeof(TSource));
-        var destinationProperties = GetWritableProperties(typeof(TDestination));
+        var destinationProperties = _propertyCache.GetCachedProperties(typeof(TDestination))
+            .ToDictionary(p => p.Name);
 
         foreach (var sourceProp in sourceProperties)
         {
@@ -61,6 +63,12 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
             var destPropName = GetDestinationPropertyName(sourceProp.Name);
             if (!destinationProperties.TryGetValue(destPropName, out var destProp))
                 continue;
+
+            if (!destProp.CanWrite)
+            {
+                throw new MappingException(
+                    $"Property '{destProp.Name}' on type '{typeof(TDestination).Name}' is not writable.");
+            }
 
             var setter = _propertyCache.GetSetter(destProp);
             var getter = _propertyCache.GetGetter(destProp);
@@ -94,13 +102,6 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
                 targetType,
                 ex);
         }
-    }
-
-    private Dictionary<string, PropertyInfo> GetWritableProperties(Type type)
-    {
-        return _propertyCache.GetCachedProperties(type)
-                .Where(p => p.CanWrite)
-                .ToDictionary(p => p.Name);
     }
 
     private string GetDestinationPropertyName(string sourcePropName)
