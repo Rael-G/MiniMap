@@ -4,14 +4,20 @@ using System.Reflection;
 
 namespace MiniMapr.Core;
 
+/// <summary>
+/// Provides cached access to property metadata and compiled getters/setters for improved performance during mapping.
+/// </summary>
 public class PropertyCache
 {
     private readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
-
     private readonly ConcurrentDictionary<string, Func<object, object?>> _getterCache = new();
-
     private readonly ConcurrentDictionary<string, Action<object, object?>> _setterCache = new();
 
+    /// <summary>
+    /// Gets the cached public instance properties of a given type. If not cached, they are retrieved via reflection and stored.
+    /// </summary>
+    /// <param name="type">The type whose properties should be retrieved.</param>
+    /// <returns>An array of <see cref="PropertyInfo"/> representing the public instance properties of the type.</returns>
     public PropertyInfo[] GetCachedProperties(Type type)
     {
         if (!_propertyCache.TryGetValue(type, out var props))
@@ -22,44 +28,43 @@ public class PropertyCache
         return props;
     }
 
+    /// <summary>
+    /// Creates a compiled getter delegate for a given property.
+    /// </summary>
+    /// <param name="property">The property for which to create the getter.</param>
+    /// <returns>A delegate that takes an object instance and returns the value of the property.</returns>
     public static Func<object, object?> CreateGetter(PropertyInfo property)
     {
         var instance = Expression.Parameter(typeof(object), "instance");
-
-        // (TargetType)instance
         var castedInstance = Expression.Convert(instance, property.DeclaringType!);
-
-        // ((TargetType)instance).Property
         var propertyAccess = Expression.Property(castedInstance, property);
-
-        // Convert the property value to object (if it's a value type)
         var castResult = Expression.Convert(propertyAccess, typeof(object));
-
-        // Final lambda: instance => (object)((TargetType)instance).Property
         var lambda = Expression.Lambda<Func<object, object?>>(castResult, instance);
-
-        return lambda.Compile(); // cria delegate compilado, muito mais rápido
+        return lambda.Compile();
     }
 
+    /// <summary>
+    /// Creates a compiled setter delegate for a given property.
+    /// </summary>
+    /// <param name="property">The property for which to create the setter.</param>
+    /// <returns>A delegate that takes an object instance and a value, and sets the property to the given value.</returns>
     public static Action<object, object?> CreateSetter(PropertyInfo property)
     {
         var instance = Expression.Parameter(typeof(object), "instance");
         var value = Expression.Parameter(typeof(object), "value");
-
-        // (TargetType)instance
         var castedInstance = Expression.Convert(instance, property.DeclaringType!);
-
-        // (PropertyType)value
         var castedValue = Expression.Convert(value, property.PropertyType);
-
-        // ((TargetType)instance).Property = (PropertyType)value
         var propertyAccess = Expression.Property(castedInstance, property);
         var assign = Expression.Assign(propertyAccess, castedValue);
-
         var lambda = Expression.Lambda<Action<object, object?>>(assign, instance, value);
         return lambda.Compile();
     }
 
+    /// <summary>
+    /// Gets a cached or newly created getter delegate for the specified property.
+    /// </summary>
+    /// <param name="prop">The property for which to get the getter delegate.</param>
+    /// <returns>A delegate that retrieves the value of the property from a given object.</returns>
     public Func<object, object?> GetGetter(PropertyInfo prop)
     {
         var key = $"{prop.DeclaringType!.FullName}.{prop.Name}";
@@ -71,6 +76,11 @@ public class PropertyCache
         return getter;
     }
 
+    /// <summary>
+    /// Gets a cached or newly created setter delegate for the specified property.
+    /// </summary>
+    /// <param name="prop">The property for which to get the setter delegate.</param>
+    /// <returns>A delegate that sets the value of the property on a given object.</returns>
     public Action<object, object?> GetSetter(PropertyInfo prop)
     {
         var key = $"{prop.DeclaringType!.FullName}.{prop.Name}";
