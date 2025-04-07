@@ -1,5 +1,5 @@
-using System.Collections.Concurrent;
 using System.Reflection;
+using MiniMapr.Core;
 
 namespace MiniMapr;
 
@@ -14,16 +14,18 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
 {
     private readonly MapperOptions _mapperOptions;
 
-    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
+    private readonly PropertyCache _propertyCache;
 
     public Mapper()
     {
         _mapperOptions = new MapperOptions();
+        _propertyCache = new PropertyCache();
     }
 
     public Mapper(MapperOptions mapperOptions)
     {
         _mapperOptions = mapperOptions;
+        _propertyCache = new PropertyCache();
     }
 
     /// <summary>
@@ -48,8 +50,8 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
         if (source is null) throw new ArgumentNullException(nameof(source));
         if (destination is null) throw new ArgumentNullException(nameof(destination));
 
-        var sourceProperties = GetCachedProperties(typeof(TSource));
-        var destinationProperties = Mapper<TSource, TDestination>.GetWritableProperties(typeof(TDestination));
+        var sourceProperties = _propertyCache.GetCachedProperties(typeof(TSource));
+        var destinationProperties = GetWritableProperties(typeof(TDestination));
 
         foreach (var sourceProp in sourceProperties)
         {
@@ -91,9 +93,9 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
         }
     }
 
-    private static Dictionary<string, PropertyInfo> GetWritableProperties(Type type)
+    private Dictionary<string, PropertyInfo> GetWritableProperties(Type type)
     {
-        return GetCachedProperties(type)
+        return _propertyCache.GetCachedProperties(type)
                 .Where(p => p.CanWrite)
                 .ToDictionary(p => p.Name);
     }
@@ -111,15 +113,4 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
             ? transform(originalValue)
             : originalValue;
     }
-
-    private static PropertyInfo[] GetCachedProperties(Type type)
-    {
-        if (!_propertyCache.TryGetValue(type, out var props))
-        {
-            props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            _propertyCache[type] = props;
-        }
-        return props;
-    }
-
 }
