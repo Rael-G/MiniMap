@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>MiniMapr.DependencyInjection</PackageId>
+    <PackageId>MiniMapr</PackageId>
     <Authors>Israel Galvan</Authors>
     <Product>MiniMapr</Product>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -19,7 +19,6 @@
     <PackageTags>object-mapping;mapper;mapping;dto;automapper;dependency-injection;minimapr</PackageTags>
     <Description>
       MiniMapr is a lightweight and flexible object mapper for .NET, built for easy, customizable mappings between classes.
-      This package provides integration with Microsoft.Extensions.DependencyInjection.
     </Description>
   </PropertyGroup>
 
@@ -30,7 +29,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
-    <PackageReference Include="MiniMapr" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MiniMapr.Core\MiniMapr.Core.csproj" />
   </ItemGroup>
 
 </Project>
