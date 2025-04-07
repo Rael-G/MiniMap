@@ -1,3 +1,5 @@
+using MiniMapr.Core.Exceptions;
+
 namespace MiniMapr;
 
 /// <summary>
@@ -22,7 +24,7 @@ public class MappingConversionException(
     string destinationTypeName,
     object? value,
     Type targetType,
-    Exception innerException) : Exception(
+    Exception innerException) : MappingException(
         $"Error mapping property '{sourcePropertyName}' (source type: {value?.GetType().Name ?? "null"}) " +
             $"to property '{destinationPropertyName}' (target type: {targetType.Name}) " +
             $"in mapping from {sourceTypeName} to {destinationTypeName}. " +
