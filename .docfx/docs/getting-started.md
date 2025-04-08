@@ -84,7 +84,7 @@ var serviceProvider = services.BuildServiceProvider();
 var mapperService = serviceProvider.GetRequiredService<IMapper>();
 ```
 
-Performing a Mapping
+### Performing a Mapping
 Once registered, you can use the mapper as follows:
 
 ```csharp
