@@ -7,7 +7,7 @@ namespace MiniMapr.Core.Utils;
 /// <summary>
 /// Provides cached access to property metadata and compiled getters/setters for improved performance during mapping.
 /// </summary>
-public class PropertyCache
+internal class PropertyCache
 {
     private readonly ConcurrentDictionary<Type, PropertyInfo[]> _propertyCache = new();
     private readonly ConcurrentDictionary<string, Func<object, object?>> _getterCache = new();

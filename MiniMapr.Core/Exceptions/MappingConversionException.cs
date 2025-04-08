@@ -17,7 +17,7 @@ namespace MiniMapr;
 /// <param name="targetType">The expected type of the destination property.</param>
 /// <param name="innerException">The original exception thrown during the conversion attempt.</param>
 [Serializable]
-public class MappingConversionException(
+internal class MappingConversionException(
     string sourcePropertyName,
     string destinationPropertyName,
     string sourceTypeName,

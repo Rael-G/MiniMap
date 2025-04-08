@@ -16,13 +16,13 @@ public class Mapper<TSource, TDestination> : ITypeMapper<TSource, TDestination>
 
     private readonly PropertyCache _propertyCache;
 
-    public Mapper()
+    internal Mapper()
     {
         _mapperOptions = new MapperOptions();
         _propertyCache = new PropertyCache();
     }
 
-    public Mapper(MapperOptions mapperOptions)
+    internal Mapper(MapperOptions mapperOptions)
     {
         _mapperOptions = mapperOptions;
         _propertyCache = new PropertyCache();

@@ -5,7 +5,7 @@ namespace MiniMapr.Core.Exceptions;
 /// This exception serves as the base class for more specific mapping-related exceptions.
 /// </summary>
 [Serializable]
-public class MappingException : Exception
+internal class MappingException : Exception
 {
 
     /// <summary>
